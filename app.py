@@ -17,17 +17,17 @@ if not GEMINI_API_KEY:
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# ---------- FIND A WORKING TEXT MODEL ----------
+# ---------- FIND AVAILABLE GEMINI MODEL ----------
 def get_text_model():
     for m in client.models.list():
-        if "generateContent" in (m.supported_generation_methods or []):
+        if "gemini" in m.name.lower():
             return m.name
     return None
 
 MODEL_NAME = get_text_model()
 
 if not MODEL_NAME:
-    st.error("❌ No text generation model available for this API key")
+    st.error("❌ No Gemini model available for this API key")
     st.stop()
 
 # ---------- UI ----------
