@@ -17,19 +17,12 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-# ---------- MODEL ----------
-model = genai.GenerativeModel("gemini-pro")
-
-# ---------- LOAD CSS ----------
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# ✅ CORRECT MODEL NAME
+model = genai.GenerativeModel("models/gemini-1.0-pro")
 
 # ---------- UI ----------
-st.markdown("<h1 class='title'>🧠 Mood Analyzer</h1>", unsafe_allow_html=True)
-st.markdown(
-    "<p class='subtitle'>Type your feelings, let AI understand your mood</p>",
-    unsafe_allow_html=True
-)
+st.title("🧠 Mood Analyzer")
+st.write("Type your feelings, let AI understand your mood")
 
 user_input = st.text_area("Enter your text", height=150)
 
@@ -58,10 +51,8 @@ Text:
                     "max_output_tokens": 200
                 }
             )
-
-            st.markdown("<div class='result'>", unsafe_allow_html=True)
+            st.success("Analysis complete ✅")
             st.write(response.text)
-            st.markdown("</div>", unsafe_allow_html=True)
 
         except Exception as e:
             st.error("🚨 Gemini API error")
