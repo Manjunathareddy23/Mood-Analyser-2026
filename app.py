@@ -3,7 +3,7 @@ load_dotenv()
 
 import streamlit as st
 import os
-import google.generativeai as genai
+from google import genai
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Mood Analyzer", layout="centered")
@@ -15,10 +15,8 @@ if not GEMINI_API_KEY:
     st.error("❌ Gemini API key not found")
     st.stop()
 
-genai.configure(api_key=GEMINI_API_KEY)
-
-# ✅ CORRECT MODEL NAME
-model = genai.GenerativeModel("models/gemini-1.0-pro")
+# ---------- GEMINI CLIENT ----------
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # ---------- UI ----------
 st.title("🧠 Mood Analyzer")
@@ -44,13 +42,11 @@ Text:
 """
 
         try:
-            response = model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.4,
-                    "max_output_tokens": 200
-                }
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=prompt
             )
+
             st.success("Analysis complete ✅")
             st.write(response.text)
 
