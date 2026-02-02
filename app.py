@@ -15,12 +15,24 @@ if not GEMINI_API_KEY:
     st.error("❌ Gemini API key not found")
     st.stop()
 
-# ---------- GEMINI CLIENT ----------
 client = genai.Client(api_key=GEMINI_API_KEY)
+
+# ---------- FIND A WORKING TEXT MODEL ----------
+def get_text_model():
+    for m in client.models.list():
+        if "generateContent" in (m.supported_generation_methods or []):
+            return m.name
+    return None
+
+MODEL_NAME = get_text_model()
+
+if not MODEL_NAME:
+    st.error("❌ No text generation model available for this API key")
+    st.stop()
 
 # ---------- UI ----------
 st.title("🧠 Mood Analyzer")
-st.write("Type your feelings, let AI understand your mood")
+st.caption(f"Using model: `{MODEL_NAME}`")
 
 user_input = st.text_area("Enter your text", height=150)
 
@@ -43,10 +55,9 @@ Text:
 
         try:
             response = client.models.generate_content(
-                model="gemini-1.5-flash",
+                model=MODEL_NAME,
                 contents=prompt
             )
-
             st.success("Analysis complete ✅")
             st.write(response.text)
 
